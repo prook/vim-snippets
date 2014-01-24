@@ -236,3 +236,118 @@ snippet gpl
 	 */
 
 	${0}
+#my eloise snippets
+snippet dbr
+	${1:r} = db_read(db0, gs("select"
+			""
+		" from"
+			" %s"
+		" where"
+			";",
+		REL(${2:relname})->name),
+		NULL);
+	ASSERT($1 != NULL);$3
+snippet whs
+	saa_rewind(${1:saa});
+	while (saa_next($1)) {
+		saa_t ${2:g} = iVS($1);
+		wchar_t *${3:k} = iK($1);
+		${4:/* code */}
+	}
+snippet RN
+	REL(${1:relname})->name${2}
+snippet RK
+	REL(${1:relname})->key_col${2}
+snippet ep
+	esset_pushes(esset, es);
+snippet esn
+	${1:es} = es_new_reg(${2:esd});
+	${3}
+	esset_pushes(esset, ${1:es});
+snippet eg
+	v = es_getlabel(es, "${1}");
+snippet ef
+	esl_fill(v, ${1});
+snippet eh
+	esl_href(v, ${1}, AK_${2:NONE});
+snippet elf
+	esl_flag(v, ES_${1:RAW});
+snippet ecf
+	esl_flag_cellof(v, ES_${1});
+snippet esdn
+	${1:esd} = esd_new("{"
+		"	${2},"
+		"}");
+snippet nscr
+	#include <stdio.h>
+	#include <eloise/api_ver.h>
+	#include <eloise/scrspec_ver.h>
+	#include "`Filename("$1.h")`"
+
+	static void scr(void)
+	{
+		${3}
+	}
+
+	sdef_t `Filename("$1")` = {
+		.name		= "`Filename("$1")[4:]`",
+		.screen_fn	= scr,
+		.txt		= { { "${1:`Filename("$1")`}",
+					"${2:`Filename("$1")`}" } },
+		.scrflags	= 0,
+		.humanurlgen_fn	= NULL,
+	};
+snippet nrel
+	#include <eloise/api_ver.h>
+	#include <eloise/relspec_ver.h>
+	#include "`Filename("$1.h")`"
+
+	static fdef_t fields[] = {
+		{	.name		= L"ikey",
+			.txt		= { { "Key", "Klíč" } },
+			.aflags		= FF_PKEY,
+			.type		= FT_AUTOKEY,
+		},
+		end_of_fieldlist
+	};
+
+	tdef_t `Filename("$1")` = {
+		.name		= "`Filename("$1")[4:]`",
+		.txt		= { { "${1:`Filename("$1")`}", "${2:`Filename("$1")`}" } },
+		.tflags		= TF_HAS_HIST | TF_HAS_AC,
+		.sysgroup_gid	= GID_IS8,
+		.guiwr		= GUIWR_ADD | GUIWR_EDIT | GUIWR_DEL | GUIWR_RESTORE,
+		.custact_fn	= NULL,
+		.preinsert_fn	= NULL,
+		.postinsert_fn	= NULL,
+		.preupdate_fn	= NULL,
+		.postupdate_fn	= NULL,
+		.predelete_fn	= NULL,
+		.postdelete_fn	= NULL,
+		.editcheck_fn	= NULL,
+		.key_col	= L"ikey",
+		.defsort_col	= L"ikey",
+		.multiunique	= NULL,
+		.extracreatesql	= NULL,
+		.fields		= fields,
+	};
+snippet nknobs
+	struct knobs {
+		${1}
+	};
+
+	static struct knobs *knobs_read(void)
+	{
+		struct knobs *kk;
+
+		kk = (struct knobs *) e_malloc(sizeof(*kk));
+		if (unlikely(kk == NULL))
+			DIE_OOM();
+
+		return kk;
+	}
+
+	static void knobs_free(struct knobs *kk)
+	{
+		e_free(kk);
+	}
